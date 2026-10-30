@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Par Mais Próximo no Teclado</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="tela"></canvas>
+
+  <div id="painel">
+    <label>Teclado
+      <select id="layout"></select>
+    </label>
+    <label>Velocidade
+      <input id="velocidade" type="range" min="0" max="100" value="50">
+    </label>
+    <label class="checkbox">
+      <input id="mostrarTeclado" type="checkbox"> mostrar teclas
+    </label>
+  </div>
+
+  <div id="estatisticas"></div>
+
+  <div id="status">Digite algumas letras para criar pontos</div>
+
+  <div id="ajuda">
+    <kbd>letras</kbd> criar/remover ponto ·
+    <kbd>Enter</kbd> rodar ·
+    <kbd>Espaço</kbd> pausar ·
+    <kbd>→</kbd> próximo passo ·
+    <kbd>Backspace</kbd> apagar último ·
+    <kbd>Esc</kbd> limpar
+  </div>
+
+  <script src="js/layouts.js"></script>
+  <script src="js/parMaisProximo.js"></script>
+  <script src="js/visualizador.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
