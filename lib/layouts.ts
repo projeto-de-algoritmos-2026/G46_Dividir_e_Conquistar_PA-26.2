@@ -3,7 +3,11 @@
 // o deslocamento horizontal da primeira tecla (em larguras de tecla) e as
 // teclas da esquerda para a direita.
 // Um espaço marca uma tecla morta (acento): ela ocupa lugar, mas não vira ponto.
-const LAYOUTS = {
+
+type Fileira = { desloc: number; teclas: string };
+type Layout = { nome: string; fileiras: Fileira[] };
+
+export const LAYOUTS = {
   abnt2: {
     nome: 'ABNT2 (Brasil)',
     fileiras: [
@@ -58,14 +62,24 @@ const LAYOUTS = {
       { desloc: 2.25, teclas: 'zxcvbkm,./' },
     ],
   },
+} satisfies Record<string, Layout>;
+
+export type IdLayout = keyof typeof LAYOUTS;
+
+export type Posicao = { x: number; y: number };
+export type Tecla = Posicao & { ch: string };
+
+export type LayoutMontado = {
+  mapa: Map<string, Posicao>;
+  teclas: Tecla[];
 };
 
 // Calcula a posição (centro) de cada tecla do layout.
 // Retorna um mapa caractere -> {x, y} e a lista de todas as teclas
 // (inclusive as mortas), usada para desenhar o contorno do teclado.
-function montarLayout(id) {
-  const mapa = new Map();
-  const teclas = [];
+export function montarLayout(id: IdLayout): LayoutMontado {
+  const mapa = new Map<string, Posicao>();
+  const teclas: Tecla[] = [];
   LAYOUTS[id].fileiras.forEach((fileira, linha) => {
     [...fileira.teclas].forEach((ch, i) => {
       const pos = { x: fileira.desloc + i + 0.5, y: linha + 0.5 };
