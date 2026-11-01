@@ -16,7 +16,14 @@ ABNT2, QWERTY (EUA), AZERTY, QWERTZ, Dvorak e Colemak.
 
 ## Como executar
 
-Não precisa instalar nada: basta abrir o arquivo `index.html` em um navegador.
+Feito com **Next.js** e **TypeScript**. É preciso ter o [Node.js](https://nodejs.org) instalado.
+
+```bash
+npm install
+npm run dev
+```
+
+Depois é só abrir http://localhost:3000 no navegador.
 
 ## Controles
 
@@ -59,10 +66,11 @@ fez e quantas a força bruta faria para os mesmos pontos.
 ## Estrutura
 
 ```
-index.html              página
-css/style.css           estilo
-js/layouts.js           posição das teclas em cada layout
-js/parMaisProximo.js    algoritmo (Dividir e Conquistar + força bruta)
-js/visualizador.js      estado da animação e desenho no canvas
-js/main.js              entrada do teclado e controle da execução
+app/layout.tsx              layout raiz da página
+app/page.tsx                página inicial
+app/globals.css             estilo
+components/Visualizador.tsx entrada do teclado, painel e controle da execução
+lib/layouts.ts              posição das teclas em cada layout
+lib/parMaisProximo.ts       algoritmo (Dividir e Conquistar + força bruta)
+lib/visualizador.ts         estado da animação e desenho no canvas
 ```
