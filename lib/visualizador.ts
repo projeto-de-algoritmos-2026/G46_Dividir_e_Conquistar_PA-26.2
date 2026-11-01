@@ -1,22 +1,37 @@
 // Estado da animação e desenho no canvas.
 
-function estadoInicial() {
+import type { Tecla } from './layouts';
+import type { Par, Passo, Ponto } from './parMaisProximo';
+
+type Intervalo = { ini: number; fim: number };
+
+export type Estado = {
+  ativo: Intervalo | null; // subproblema atual
+  cortes: (Intervalo & { x: number })[]; // retas de divisão visíveis
+  faixa: { xCorte: number; d: number; faixa: Ponto[] } | null;
+  comparando: { a: Ponto; b: Ponto } | null; // par sendo comparado agora
+  melhorAtual: Par | null; // melhor par do subproblema atual
+  resolvidos: (Intervalo & { melhor: Par })[]; // melhor par de cada subproblema já resolvido
+  fim: Par | null; // resposta final
+};
+
+export function estadoInicial(): Estado {
   return {
-    ativo: null, // subproblema atual {ini, fim}
-    cortes: [], // retas de divisão visíveis
-    faixa: null, // {xCorte, d, pontos}
-    comparando: null, // par sendo comparado agora
-    melhorAtual: null, // melhor par do subproblema atual
-    resolvidos: [], // melhor par de cada subproblema já resolvido
-    fim: null, // resposta final
+    ativo: null,
+    cortes: [],
+    faixa: null,
+    comparando: null,
+    melhorAtual: null,
+    resolvidos: [],
+    fim: null,
   };
 }
 
-const dentro = (r, ini, fim) => r.ini >= ini && r.fim <= fim;
+const dentro = (r: Intervalo, ini: number, fim: number) => r.ini >= ini && r.fim <= fim;
 
 // Aplica um passo do algoritmo ao estado e devolve a descrição do passo.
-function aplicarPasso(estado, passo) {
-  const nome = (p) => `'${p.ch}'`;
+export function aplicarPasso(estado: Estado, passo: Passo): string {
+  const nome = (p: Ponto) => `'${p.ch}'`;
   switch (passo.tipo) {
     case 'base':
       estado.ativo = { ini: passo.ini, fim: passo.fim };
@@ -65,20 +80,24 @@ function aplicarPasso(estado, passo) {
       estado.fim = passo.melhor;
       return `Par mais próximo: ${nome(passo.melhor.a)} e ${nome(passo.melhor.b)} — distância ${passo.melhor.d.toFixed(2)} tecla(s)`;
   }
-  return '';
 }
 
-class Visualizador {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.teclas = [];
-    this.mostrarTeclado = false;
-    window.addEventListener('resize', () => this.redimensionar());
+export class Visualizador {
+  private ctx: CanvasRenderingContext2D;
+  private teclas: Tecla[] = [];
+  private u = 1;
+  private ox = 0;
+  private oy = 0;
+  private w = 0;
+  private h = 0;
+  mostrarTeclado = false;
+
+  constructor(private canvas: HTMLCanvasElement) {
+    this.ctx = canvas.getContext('2d')!;
     this.redimensionar();
   }
 
-  definirTeclas(teclas) {
+  definirTeclas(teclas: Tecla[]) {
     this.teclas = teclas;
     this.redimensionar();
   }
@@ -103,10 +122,10 @@ class Visualizador {
     this.h = h;
   }
 
-  tx(x) { return this.ox + x * this.u; }
-  ty(y) { return this.oy + y * this.u; }
+  private tx(x: number) { return this.ox + x * this.u; }
+  private ty(y: number) { return this.oy + y * this.u; }
 
-  linha(a, b, cor, espessura) {
+  private linha(a: Ponto, b: Ponto, cor: string, espessura: number) {
     const ctx = this.ctx;
     ctx.strokeStyle = cor;
     ctx.lineWidth = espessura;
@@ -116,7 +135,7 @@ class Visualizador {
     ctx.stroke();
   }
 
-  desenhar(pontos, estado, px) {
+  desenhar(pontos: Ponto[], estado?: Estado, px?: Ponto[]) {
     const { ctx, u } = this;
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, this.w, this.h);
@@ -131,12 +150,16 @@ class Visualizador {
 
     const topo = this.ty(-0.5);
     const base = this.ty(4.5);
-    const indice = px ? new Map(px.map((p, i) => [p, i])) : new Map();
+    const indice = new Map((px ?? []).map((p, i) => [p, i]));
     const naFaixa = new Set(estado?.faixa?.faixa ?? []);
     const ativo = estado?.ativo;
-    const noAtivo = (p) => !ativo || (indice.get(p) >= ativo.ini && indice.get(p) < ativo.fim);
+    const noAtivo = (p: Ponto) => {
+      if (!ativo) return true;
+      const i = indice.get(p)!;
+      return i >= ativo.ini && i < ativo.fim;
+    };
 
-    if (estado) {
+    if (estado && px) {
       // Região do subproblema atual.
       if (ativo) {
         const x0 = this.tx(px[ativo.ini].x - 0.5);
