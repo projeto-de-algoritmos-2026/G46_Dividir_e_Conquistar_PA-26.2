@@ -3,7 +3,13 @@
 **Disciplina:** Projeto de Algoritmos — UnB
 **Conteúdo:** Dividir e Conquistar
 
+| Aluno | Matrícula |
+|---|---|
+| Victor Leandro Rocha de Assis | 222021826 |
+
 **Acesse:** https://projeto-de-algoritmos-2026.github.io/G46_Dividir_e_Conquistar_PA-26.2/
+
+**Vídeo de apresentação:** https://youtu.be/5TrHVY0kfOE
 
 ## Sobre
 
