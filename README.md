@@ -3,6 +3,8 @@
 **Disciplina:** Projeto de Algoritmos — UnB
 **Conteúdo:** Dividir e Conquistar
 
+**Acesse:** https://projeto-de-algoritmos-2026.github.io/G46_Dividir_e_Conquistar_PA-26.2/
+
 ## Sobre
 
 Uma tela preta onde cada tecla digitada vira um ponto, desenhado na mesma
